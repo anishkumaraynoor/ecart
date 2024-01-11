@@ -14,10 +14,22 @@ const productSlice = createSlice({
     name:'products',
     initialState:{
         allProducts:[],
+        allProductsDummy:[],
         loading:false,
-        error:""
+        error:"",
+        productsPerPage:10,
+        currentPage:1
     },
     reducers:{
+        searchByProduct:(state,action)=>{
+           state.allProducts = state.allProductsDummy.filter(item=>item.title.toLowerCase().includes(action.payload))
+        },
+        navigateToNextPage:(state)=>{
+            state.currentPage++
+        },
+        navigateToPrevPage:(state)=>{
+            state.currentPage--
+        }
     },
     extraReducers:(builder)=>{
         builder.addCase(fetchProducts.pending,(state)=>{
@@ -26,6 +38,7 @@ const productSlice = createSlice({
         builder.addCase(fetchProducts.fulfilled,(state,action)=>{
             state.loading = false
             state.allProducts = action.payload
+            state.allProductsDummy = action.payload
         })
         builder.addCase(fetchProducts.rejected,(state)=>{
             state.loading = false
@@ -34,4 +47,5 @@ const productSlice = createSlice({
         })
     }   
 })
+export const {searchByProduct, navigateToNextPage, navigateToPrevPage} = productSlice.actions
 export default productSlice.reducer
